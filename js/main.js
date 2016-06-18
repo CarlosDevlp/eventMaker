@@ -1,13 +1,17 @@
 var accessToken='';
 $(function(){
 
-	var addPanel=function(nombreEvento,descripcionEvento,rowid){
-		return ' <div class="panel panel-default"> '         
-				+' <div class="panel-body">'+nombreEvento
-					+' <button  class="btn btn-default pull-right btn-remove" rowid="'+rowid+'">Eliminar</button> '
-				+' </div> '
-				+' <div class="panel-footer">'+descripcionEvento+'</div> '
-				+' </div>';
+	var addPanel=function(name,description,date,place,organizer,twitter,rowid){
+		return ' <div class="panel panel-default"> '+         
+				' <div class="panel-body">'+name+
+					' <button  class="btn btn-default pull-right btn-remove" rowid="'+rowid+'">Eliminar</button> '+
+				' </div> '+
+				' <div class="panel-footer">'+
+					description+
+					'<br/> Lugar: '+place+ ' Fecha: '	+ date	+
+					'<div class="pull-right"> '+organizer+' ('+twitter+')</div>'+
+				 ' </div> '+
+				' </div>';
 	};
     
 
@@ -31,7 +35,7 @@ $(function(){
 					 	console.log(response);
 
 					 	for(var i in response.rows)	
-					 		eventHtml+= addPanel(response.rows[i][0],response.rows[i][1],response.rows[i][6]);
+					 		eventHtml+= addPanel(response.rows[i][0],response.rows[i][1],response.rows[i][2],response.rows[i][3],response.rows[i][4],response.rows[i][5],response.rows[i][6]);
 
 						$('.container').html(eventHtml);
 
@@ -47,14 +51,14 @@ $(function(){
 
 		//INSERTAR
 		var oauthTokenRequestUrl= 'https://accounts.google.com/o/oauth2/v2/auth?scope=fusiontables&redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=ClEWqOsymN-pop3L2-RQQG5c&client_id=71629830816-c289ppb0651ainoj72j95pf3eqle4h7o.apps.googleusercontent.com';	
-		insert=function(nombreEvento,descripcionEvento,date,place,organizer,twitter){
+		insert=function(name,description,date,place,organizer,twitter){
 
 			var settings = {
 				"async": true,
 				"crossDomain": true,
 				"url": "https://www.googleapis.com/fusiontables/v2/query?sql=INSERT%20INTO%201RgwO19PGqraBt4R7VmuyageDvqh-PwU6M07oyAs_%20('Nombre'%2C'Descripci%C3%B3n'%2C'Fecha'%2C'Lugar'%2C'Organizador%2FVocero'%2C'Twitter')"+
-					"%20VALUES%20%20('"+encodeURIComponent(nombreEvento)+"'%2C'"+
-									 	encodeURIComponent(descripcionEvento)+"'%2C'"+
+					"%20VALUES%20%20('"+encodeURIComponent(name)+"'%2C'"+
+									 	encodeURIComponent(description)+"'%2C'"+
 									 	encodeURIComponent(date)+"'%2C'"+
 										encodeURIComponent(place)+"'%2C'"+
 										encodeURIComponent(organizer)+"'%2C'"+
@@ -81,13 +85,15 @@ $(function(){
 			insert( $('.form-name').val(),
 					$('.form-description').val(),
 					$('.form-date').val(),
+					$('.form-place').val(),
 					$('.form-organizer').val(),
-					$('.form-twitter').val()
+					'@'+$('.form-twitter').val()
 				);
 
 			$('.form-name').val('');
 			$('.form-description').val('');
 			$('.form-date').val('');
+			$('.form-place').val('');
 			$('.form-organizer').val('');
 			$('.form-twitter').val('');
 		});
@@ -117,7 +123,7 @@ $(function(){
 			$('.btn').addClass('disabled');										
 			$('.btn.btn-auth').removeClass('disabled');
 	};	
-	
+	 
 
 	enableButtons=function(){
 			$('.btn').removeClass('disabled');						
